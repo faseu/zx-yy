@@ -20,6 +20,22 @@
       > 
         {{ t('Initiate Call') }}
       </div>
+      <div class="machine-control" :class="{ 'is-expanded': isControlExpanded }">
+        <button class="machine-control-toggle" type="button" @click="toggleControl">
+          {{ isControlExpanded ? '收起控制' : '设备控制' }}
+        </button>
+        <div v-if="isControlExpanded" class="machine-control-card">
+          <button
+            v-for="item in machineControlButtons"
+            :key="item.control"
+            class="machine-control-btn"
+            type="button"
+            @click="handleSendControl(item.control)"
+          >
+            {{ item.label }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -31,11 +47,13 @@ import useCall from '../useCall';
 import { trim } from '../../../utils';
 import Icon from '../../../components/common/Icon/Icon.vue';
 import LeftArrowSrc from '../../../assets/Call/left-arrow.svg';
+import { handleLoginMachineControl, handleSendControl, machineControlButtons } from '../../../services/machineControl';
 
 const { t } = useLanguage();
 const { navigate } = useMyRouter();
 const { call } = useCall();
 const calleeUserID = ref('');
+const isControlExpanded = ref(false);
 
 const placeholderText = computed(() => {
   return t('input the userID to Call');
@@ -51,6 +69,18 @@ const handleCallUserID = () => {
 
 const goHome = () => {
   navigate('/home');
+}
+
+const toggleControl = async () => {
+  if (isControlExpanded.value) {
+    isControlExpanded.value = false;
+    return;
+  }
+
+  const isLoginSuccess = await handleLoginMachineControl();
+  if (isLoginSuccess) {
+    isControlExpanded.value = true;
+  }
 }
 
 </script>

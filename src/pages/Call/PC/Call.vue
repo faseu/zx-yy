@@ -18,6 +18,17 @@
       <Icon :src="QRSrc" :size="16" @click="showQRCode" style="cursor: pointer;"/>
       <QRCode class="call-qr" v-if="isShowQRcode" />
     </div>
+    <div class="machine-control">
+      <button
+        v-for="item in machineControlButtons"
+        :key="item.control"
+        class="machine-control-btn"
+        type="button"
+        @click="handleSendControl(item.control)"
+      >
+        {{ item.label }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -31,6 +42,7 @@ import Button from '../../../components/common/Button/Button.vue';
 import Icon from '../../../components/common/Icon/Icon.vue';
 import QRSrc from '../../../assets/Call/qr.svg';
 import CreateUserTip from '../../../components/CreateUserTip/CreateUserTip.vue';
+import { handleSendControl, machineControlButtons } from '../../../services/machineControl';
 
 const calleeUserID = ref('');
 const { t } = useLanguage();
@@ -111,7 +123,7 @@ const showQRCode = () => {
   }
 
   .call-tip-qr {
-    margin-top: 175px;
+    margin-top: 112px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -125,6 +137,33 @@ const showQRCode = () => {
       right: 45px;
       top: -170px;
     }
+  }
+
+  .machine-control {
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    bottom: 96px;
+    width: min(520px, calc(100vw - 32px));
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    transform: translateX(-50%);
+  }
+
+  .machine-control-btn {
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    background: #1C66E5;
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .machine-control-btn:hover {
+    background: #0C59F2;
   }
 }
 </style>
